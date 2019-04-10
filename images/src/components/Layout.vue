@@ -13,14 +13,19 @@
         <Layout>
             <Header class="layout-header">
                 <Row>
-                    <Col offset="2" span="19" class="header-left">
+                    <Col offset="2" span="17" class="header-left">
                         云存储图片管理系统
                     </Col>
-                    <Col span="3" class="header-right">
+                     <Col span="2" class="header-right">
+                        <Button ghost type="text" icon="ios-image" class="exit-button" @click="home">
+                            新建相册
+                        </Button>
+                    </Col>
+                    <Col span="2" class="header-right">
                         <Button ghost type="text" icon="md-exit" class="exit-button" @click="quit">
                              退出系统
                         </Button>
-                    </Col>
+                    </Col>                   
                 </Row>
             </Header>
             <Layout>
@@ -55,9 +60,6 @@
                 <Layout :style="{padding: '0 24px 24px'}">
                     <Breadcrumb :style="{margin: '24px 0'}" separator=">">
                         <BreadcrumbItem v-for="(item,index) in crumbList" :key="index">{{item}}</BreadcrumbItem>
-                        <!-- <BreadcrumbItem>Home</BreadcrumbItem>
-                        <BreadcrumbItem>Components</BreadcrumbItem>
-                        <BreadcrumbItem>Layout</BreadcrumbItem> -->
                     </Breadcrumb>
                     <Content :style="{padding: '24px', background: '#fff'}">
                         <!-- 保存组件状态到内存，避免重新渲染 -->
@@ -132,6 +134,9 @@ export default {
   methods: {
     quit() {
         this.$router.push('/login')
+    },
+    home() {
+        this.$router.push('/')
     },
     openView(e) {
         //console.log(e)

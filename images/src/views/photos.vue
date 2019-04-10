@@ -22,7 +22,9 @@ img[src=""],img:not([src]){
         <img :id="item.id" class="img" :src="item.url">
         <div class="cover">
             <Icon type="ios-expand" @click.native="handleFullscreen(item.id)"></Icon>
-            <Icon type="ios-trash-outline" @click.native="handleRemove"></Icon>
+            <Icon type="ios-create-outline" @click.native="showEditModal(item.id)"></Icon>
+            <Icon type="ios-contacts-outline" @click.native="shareMoments(item.id)"></Icon>
+            <Icon type="ios-trash-outline" @click.native="handleRemove(item.id)"></Icon>
         </div>
       </div>
     </div>
@@ -49,16 +51,50 @@ img[src=""],img:not([src]){
         </Form>
         <!-- <Button @click="confirmUpload">确认上传</Button> -->
     </Modal>
+
+    <Modal
+        v-model="editModal"
+        title="编辑照片信息">
+        <Form :label-width="80" >
+          <FormItem label="描述信息：">
+            <Input type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></Input>
+          </FormItem>   
+        </Form>
+    </Modal>
+
+    <Modal
+        v-model="shareModal"
+        title="分享动态">
+        <Form :label-width="90" >
+          <FormItem label="只言片语：">
+            <Input type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></Input>
+          </FormItem>   
+          <FormItem label="仅个人可见：">
+            <RadioGroup>
+              <Radio label="是"></Radio>
+              <Radio label="否"></Radio>
+            </RadioGroup>
+          </FormItem> 
+          <FormItem label="时刻：">
+            <DatePicker :value="timeValue" type="datetime" style="width: 200px"></DatePicker>
+          </FormItem>        
+        </Form>
+    </Modal>
     
   </div>
 </template>
 
 <script>
+import {nowDate} from '@/libs/util.js'
+
 export default {
   data() {
     return {
       imgSrc: null, 
       modal: false,
+      editModal: false,
+      shareModal: false,
+      timeValue: "",
       albumId: "",
       imgList: [
         {
@@ -126,8 +162,18 @@ export default {
         main.msRequestFullscreen();
       }  
     },
-    handleRemove () {
+    //编辑照片信息
+    showEditModal (id) {
+      this.editModal = true
+    },
+    //删除照片
+    handleRemove (id) {
       alert("删除")
+    },
+    //发朋友圈
+    shareMoments (id) {
+      this.shareModal = true
+      this.timeValue = nowDate(new Date())
     },
     confirm () {
       alert("确认添加")
@@ -185,9 +231,9 @@ export default {
       }
       .cover i{
         color: #fff;
-        font-size: 40px;
+        font-size: 35px;
         cursor: pointer;
-        margin: 70px 10px;
+        margin: 70px 5px;
       }
     }
 

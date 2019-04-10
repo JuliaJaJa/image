@@ -40,7 +40,7 @@
             <Input placeholder="请输入相册名称"></Input>
           </FormItem>
           <FormItem label="新建日期">
-            <DatePicker :value="timeValue" type="datetime" placeholder="Select date" style="width: 200px"></DatePicker>
+            <DatePicker :value="timeValue" type="datetime" style="width: 200px"></DatePicker>
           </FormItem>
           <FormItem label="描述信息">
             <Input type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></Input>

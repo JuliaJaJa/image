@@ -29,7 +29,7 @@
 
 <script>
 export default {
-  name: 'registerForm',
+  name: 'loginForm',
   data () {
     return {
       login_loading: false,
