@@ -1,6 +1,6 @@
 <template>
 <div>
-  <!-- <bg></bg>   -->
+  <bg></bg>  
   <register-form></register-form>
 </div>
 </template>

@@ -38,10 +38,16 @@ img[src=""],img:not([src]){
             ref="upload" 
             action="//jsonplaceholder.typicode.com/posts/"
             :on-success="handleSuccess"
-            :show-upload-list="false">             
+            :show-upload-list="false">           
+              <!--action="http://localhost:8080/api/upload"  -->
           <Button icon="ios-cloud-upload-outline">上传照片</Button> 
         </Upload>
-        <Button @click="confirmUpload">确认上传</Button>
+        <Form :label-width="80" style="margin-top:10px">
+          <FormItem label="描述信息：">
+            <Input type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></Input>
+          </FormItem>    
+        </Form>
+        <!-- <Button @click="confirmUpload">确认上传</Button> -->
     </Modal>
     
   </div>
@@ -128,9 +134,6 @@ export default {
     },
     handleSuccess (res, file) {
       this.imgSrc = require("@/assets/" + file.name)
-    },
-    confirmUpload () {
-      alert("确认上传")
     }
   },
 }

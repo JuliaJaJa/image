@@ -6,18 +6,19 @@
           个人信息
         </p>
         <Row>
-          <Col span="8" style="text-align:center">
-            <img  :src="imgSrc" class="logo"> 
-            <Upload
-                ref="upload" 
-                action="//jsonplaceholder.typicode.com/posts/"
-                :on-success="handleSuccess"
-                :show-upload-list="false">             
-              <Button icon="ios-cloud-upload-outline">上传头像</Button> 
-            </Upload>
-          </Col>
-          <Col span="16">
-             <Form ref="userForm" :model="userForm" :rules="ruleCustom" :label-width="80">
+          <Form ref="userForm" :model="userForm" :rules="ruleCustom" :label-width="80">
+            <Col span="8" style="text-align:center">              
+              <Upload
+                  action=""
+                  
+                  :format="['jpg','jpeg','png', 'gif']"
+                  :on-format-error="handleFormatError">
+                  <img  :src="imgSrc" class="logo"> 
+                  <!-- :show-upload-list="false">     :before-upload="handleUploadicon"         -->
+                <Button icon="ios-cloud-upload-outline">上传头像</Button> 
+              </Upload>
+            </Col>
+            <Col span="16">          
               <FormItem label="用户名：">
                 <Input v-model.trim="userForm.name" placeholder="请输入用户名" size="large"></Input>
               </FormItem>
@@ -25,24 +26,23 @@
                 <Input v-model.trim="userForm.phone" placeholder="请输入手机号" size="large"></Input>
               </FormItem>
               <FormItem label="密码：">
-                <Input v-model.trim="userForm.password" placeholder="请输入密码" size="large"></Input>
+                <Input type="password" v-model.trim="userForm.password" placeholder="请输入密码" size="large"></Input>
               </FormItem>       
               <FormItem label="性别：">
-                  <RadioGroup v-model="sex">
-                      <Radio label="male">男</Radio>
-                      <Radio label="female">女</Radio>
+                  <RadioGroup v-model="userForm.sex">
+                      <Radio label="0">男</Radio>
+                      <Radio label="1">女</Radio>
                   </RadioGroup>
               </FormItem>
               <FormItem label="个性签名：">
-                <Input v-model="signature" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></Input>
+                <Input v-model="userForm.signature" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></Input>
               </FormItem>      
               <FormItem>
                 <Button type="primary" @click="register" long>注册</Button>
-              </FormItem>
-            </Form>
-          </Col>
+              </FormItem>           
+            </Col>
+          </Form>
         </Row>
-       
     </Card>
   </div>
 </template>
@@ -57,10 +57,10 @@ export default {
       userForm: {
         name: '',
         phone: '',
-        password: ''       
-      },
-      signature: '',
-      sex: '',
+        password: '',
+        signature: '',
+        sex: '',    
+      },     
       ruleCustom: {
         username: [
           {required: true, message: '用户名不能为空', trigger: 'blur'}
@@ -73,19 +73,53 @@ export default {
   },
   methods: {
     register () {
-      this.$axios.post('/addUser')
+      console.log(this.imgSrc, this.userForm.sex)
+      this.$axios.post('/addUser',{
+        name: this.userForm.name,
+        password: this.userForm.password,
+        phone: this.userForm.phone,
+        sex: this.userForm.sex,
+        avatar: ""
+      })
       .then(res => {
-        that.data=res.data;
-        console.log(res.data);
+        console.log(res)
       })
       .catch((err) => {
         console.log(err);
       })
 
     },
-    handleSuccess (res, file) {
-      console.log(file.name)
-      this.imgSrc = require("@/assets/" + file.name)
+    handleUploadicon (file) {
+      console.log(file)
+      let splic = file.name.split('.')
+      if (  splic[splic.length - 1] === 'png' ||  
+            splic[splic.length - 1] === 'jpg' ||
+            splic[splic.length - 1] === 'gif' || 
+            splic[splic.length - 1] === 'jpeg' ) {
+          let formData = new FormData()
+          formData.append("file", file)
+          let config = {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
+          }
+          this.$axios.post('/fileUpload',{
+            formData,
+            config
+          }).then(res => {
+            console.log(res)
+            if (res) {
+              this.imgSrc = res.data
+            } else {
+                this.imgSrc = require("@/assets/logo1.jpg")
+            }
+          }).catch((err) => {
+            console.log(err);
+          })
+      }
+    },
+    handleFormatError () {
+      this.$Message.info("图片格式不正确，请上传正确的图片格式！")
     }
   }
 }
@@ -94,7 +128,7 @@ export default {
 <style lang="less" scoped>
 .registerForm{  
   position: absolute;
-  top: 200px;
+  top: 100px;
   right: 100px;
 
   .logo {

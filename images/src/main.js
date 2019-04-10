@@ -13,7 +13,6 @@ axios.defaults.baseURL = 'http://localhost:8080/api'
 Vue.prototype.$axios = axios
 Vue.config.productionTip = false
 
-
 Vue.use(iView);
 
 /* eslint-disable no-new */

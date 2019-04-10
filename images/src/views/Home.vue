@@ -5,7 +5,7 @@
 }
 .img-carousel {
   width: 480px;
-  height: 230px;;
+  height: 230px;
 }
 </style>
 
@@ -131,6 +131,11 @@ export default {
 
 <style lang="less" scoped>
 .container {
+  background: url("../assets/login_bg2.jpg");
+  background-repeat:no-repeat; 
+  background-size:100% 100%;
+  width: 100%;
+  height: 100%;
   .marginTop {
     margin-top: 20px;
     display: flex;

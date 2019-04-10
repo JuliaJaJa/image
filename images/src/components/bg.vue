@@ -1,27 +1,28 @@
 <template>  
-  <div class="bg-wrap" :style="{backgroundImage:`url(${login_img})`}">    
-  </div> 
+
+  <div id="particles-js"></div>
 </template>
 
 <script>
+import particleConfig from '../config/particleConfig'
 
 export default {
   name: "bg",
-  data () {
-    return {
-      login_img: require("@/assets/login-bg.jpg")
-    }
+  mounted() {
+    particlesJS("particles-js", particleConfig);
   }
 }
 </script>
 
 <style lang="less" scoped> 
-  .bg-wrap{
+   #particles-js {
     width: 100vw;
-    height: 100vh;   
-    background-size: 100%;
-    background-position: center;
-    position: relative;
-  }
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    background-color: rgba(70, 82, 157, 0.89);
+  } 
 </style>
 
