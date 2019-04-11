@@ -13,8 +13,11 @@
         <Layout>
             <Header class="layout-header">
                 <Row>
-                    <Col offset="2" span="17" class="header-left">
+                    <Col offset="2" span="16" class="header-left">
                         云存储图片管理系统
+                    </Col>
+                    <Col span="1" class="header-right">
+                        Julia
                     </Col>
                      <Col span="2" class="header-right">
                         <Button ghost type="text" icon="ios-image" class="exit-button" @click="home">

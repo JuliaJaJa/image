@@ -35,21 +35,25 @@ img[src=""],img:not([src]){
         @on-ok="confirm">
         <div style="width: 100%;height: 230px;margin-bottom: 20px;border:1px dashed grey;box-sizing:border-box">
           <img :src="imgSrc" class="logoImg"> 
-        </div>
-        <Upload
-            ref="upload" 
-            action="//jsonplaceholder.typicode.com/posts/"
-            :on-success="handleSuccess"
-            :show-upload-list="false">           
-              <!--action="http://localhost:8080/api/upload"  -->
-          <Button icon="ios-cloud-upload-outline">上传照片</Button> 
-        </Upload>
-        <Form :label-width="80" style="margin-top:10px">
-          <FormItem label="描述信息：">
-            <Input type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></Input>
-          </FormItem>    
+        </div>       
+        <Form style="margin-top:10px">
+          <FormItem>
+            <Upload
+                action=""
+                :show-upload-list="false">           
+              <Button icon="ios-cloud-upload-outline">上传照片</Button> 
+            </Upload>
+          </FormItem>
+          <FormItem :label-width="80" label="照片url：">
+            <Input></Input>
+          </FormItem>   
+          <FormItem :label-width="80" label="描述信息：">
+            <Input type="textarea" placeholder="Enter something..."></Input>
+          </FormItem>
         </Form>
-        <!-- <Button @click="confirmUpload">确认上传</Button> -->
+        <div slot="footer">
+          <Button type="primary" @click="confirmUpload">确认上传</Button>
+        </div>
     </Modal>
 
     <Modal
@@ -146,7 +150,7 @@ export default {
       this.modal = true      
     },
     ok () {
-      //调用添加照片接口
+      // 调用添加照片接口
       this.$Message.info('确认添加');
     },   
     // 全屏
@@ -162,15 +166,15 @@ export default {
         main.msRequestFullscreen();
       }  
     },
-    //编辑照片信息
+    // 编辑照片信息
     showEditModal (id) {
       this.editModal = true
     },
-    //删除照片
+    // 删除照片
     handleRemove (id) {
       alert("删除")
     },
-    //发朋友圈
+    // 发朋友圈
     shareMoments (id) {
       this.shareModal = true
       this.timeValue = nowDate(new Date())
@@ -178,8 +182,9 @@ export default {
     confirm () {
       alert("确认添加")
     },
-    handleSuccess (res, file) {
-      this.imgSrc = require("@/assets/" + file.name)
+    // 确认上传
+    confirmUpload () {
+      alert("确认上传")
     }
   },
 }

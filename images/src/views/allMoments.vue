@@ -6,8 +6,14 @@
       <Row>
         <Col span="4">
           <div class="avatarContent">
-            <Poptip trigger="hover" title="用户信息" content="content">
+            <Poptip word-wrap placement="bottom" trigger="hover" width="200" @on-popper-show="showInfo">
               <img :src="imgSrc" class="logo"> 
+              <div slot="content">
+                <p><span>用户名：</span>Julia</p>
+                <p><span>手机号: </span>13207134490</p>
+                <p><span>性别: </span>小女孩</p>
+                <p><span>个性签名：</span>啦啦啦啦啦啦啦啦啦啦啦啦啦啦</p>
+              </div>
             </Poptip>
             <p>2019-02-05 16:05</p>
           </div>
@@ -20,6 +26,13 @@
         </Col>
       </Row>
     </div>
+    <div class="page">
+       <Page :total="100" 
+             :page-size-opts="[3,5,10]" 
+             show-sizer show-total 
+             @on-change="changePage" 
+             @on-page-size-change="changePageSize"/>
+    </div>  
   </div>
 </template>
 
@@ -28,6 +41,20 @@ export default {
   data () {
     return {
       imgSrc: require("@/assets/logo1.jpg")
+    }
+  },
+  methods: {
+    // 每次hover时调接口展示用户信息
+    showInfo () {
+      // console.log("111")
+    },
+    // 换页数
+    changePage (e) {
+      console.log(e)
+    },
+    // 换尺寸
+    changePageSize (e) {
+      console.log(e)
     }
   }
 }
@@ -58,5 +85,9 @@ export default {
       height: 250px;
     }
   }
+}
+.page {
+  margin-top: 20px;
+  text-align: center;
 }
 </style>

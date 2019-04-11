@@ -8,15 +8,17 @@
         <Row>
           <Form ref="userForm" :model="userForm" :rules="ruleCustom" :label-width="80">
             <Col span="8" style="text-align:center">              
-              <Upload
+              <img  :src="imgSrc" class="logo">
+              <input type="file" id="imgValue" @change="getFullPath"/>
+              <!-- <Upload
                   action=""
-                  
+                  :before-upload="handleUploadicon"
                   :format="['jpg','jpeg','png', 'gif']"
+                  :show-upload-list="true"
                   :on-format-error="handleFormatError">
                   <img  :src="imgSrc" class="logo"> 
-                  <!-- :show-upload-list="false">     :before-upload="handleUploadicon"         -->
                 <Button icon="ios-cloud-upload-outline">上传头像</Button> 
-              </Upload>
+              </Upload> -->
             </Col>
             <Col span="16">          
               <FormItem label="用户名：">
@@ -89,8 +91,19 @@ export default {
       })
 
     },
+    getFullPath () {
+      console.log("如何获取图片全路径")
+    },
     handleUploadicon (file) {
       console.log(file)
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => {
+        let _base64 = reader.result
+        // console.log("base64", _base64)
+        var data64 = _base64.slice(_base64.indexOf(',')+1);
+        console.log("data64", data64)
+      }
       let splic = file.name.split('.')
       if (  splic[splic.length - 1] === 'png' ||  
             splic[splic.length - 1] === 'jpg' ||
@@ -103,7 +116,7 @@ export default {
               "Content-Type": "multipart/form-data"
             }
           }
-          this.$axios.post('/fileUpload',{
+          this.$axios.post('/upload',{
             formData,
             config
           }).then(res => {
@@ -111,7 +124,7 @@ export default {
             if (res) {
               this.imgSrc = res.data
             } else {
-                this.imgSrc = require("@/assets/logo1.jpg")
+              this.imgSrc = require("@/assets/logo1.jpg")
             }
           }).catch((err) => {
             console.log(err);
