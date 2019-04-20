@@ -12,6 +12,7 @@ export default {
         return {
             loading: false,
             relation: '',
+            friendId: '',
             columns:[
                 {
                     title: '请求添加好友用户名',
@@ -33,7 +34,7 @@ export default {
                                 },
                                 on: {
                                     click: () => {
-                                       this.agreeAdd(params.row.relationId)
+                                       this.agreeAdd(params.row.relationId, params.row.requestId)
                                     }
                                 }
                             }, "确认添加"),
@@ -44,7 +45,7 @@ export default {
                                 },
                                 on: {
                                     click: () => {
-                                       this.unagreeAdd(params.row.relationId)
+                                       this.unagreeAdd(params.row.relationI)
                                     }
                                 }
                             }, "拒绝添加")
@@ -77,8 +78,9 @@ export default {
             })
         },
         // 同意添加
-        agreeAdd(relationId) {
+        agreeAdd(relationId, requestId) {
            this.relation = 1
+           this.friendId = requestId
            this.checkAdd(relationId)
         },
         // 不同意添加
@@ -94,7 +96,22 @@ export default {
             }).then(res => {
                 console.log(res)
                 if (res.data.code === 200) {
-                    this.$Message.success(res.data.msg)
+                    this.$Message.success(res.data.msg)                   
+                    //将两人好友关系加入数据库表中
+                    if (res.data.msg === '成功添加对方为好友') {
+                        this.$axios.post('/addConnection', {
+                            userId: this.$store.state.userId,
+                            friendId: this.friendId
+                        }).then(res => {
+                            console.log(res)
+                            if (res.data.code === 400) {
+                               this.$Message.error(res.data.msg)
+                            }
+                        }).catch((err) => {
+                            console.log(err)
+                        })
+                    }
+                    //刷新请求列表
                     this.getAddRequest()
                 } else {
                     this.$Message.info(res.data.msg)

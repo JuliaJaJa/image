@@ -48,7 +48,7 @@
                                 社区
                             </template>
                             <MenuItem name="community/myMoments">我的动态</MenuItem>
-                            <MenuItem name="community/allMoments">所有动态</MenuItem>
+                            <MenuItem name="community/allMoments">好友动态</MenuItem>
                         </Submenu>                        
                          <Submenu name="3">
                             <template slot="title">
@@ -134,7 +134,7 @@ export default {
             if(this.crumbList[1] === "myMoments") {
                 this.crumbList[1] = "我的动态"
             } else {
-                this.crumbList[1] = "所有动态"
+                this.crumbList[1] = "好友动态"
             }
         }
         if (this.crumbList[0] === "personal") {

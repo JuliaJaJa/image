@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>所有动态</h1>
+    <h1>好友动态</h1>
     <hr>
     <div class="content">
       <Row style="margin-bottom: 10px;" v-for="item in momentList" :key="item.momentId">
@@ -42,6 +42,7 @@ export default {
   data () {
     return {
       momentList: [],
+      friendIds: [],
       pageSize : 3,
       pageNum: 1,
       total: 0,
@@ -51,16 +52,34 @@ export default {
       signature: ''
     }
   },
-  created() {
-    this.getAllMomentList()
+  created() {   
+    //获取朋友Ids
+    this.$axios.post('/getFriendsIds', {
+      userId: this.$store.state.userId
+    })
+    .then(res => {
+      if (res.data.data) {
+        this.friendIds = res.data.data
+        this.$store.commit('changeFriendIds', this.friendIds)
+        //根据Ids获取momentList
+         this.getAllMomentList()
+      } else {
+        this.friendIds = []
+        this.$Message.info(res.data.msg)
+      }
+    }).catch((err) => {
+      console.log(err)
+    })  
   },
   methods: {
     // 获取所有朋友圈列表
     getAllMomentList() {
       this.$axios.post('/getAllMomentList', {
+        friendIds: this.friendIds,
         pageSize: this.pageSize,
         pageNum: this.pageNum
       }).then(res => {
+        console.log(res)
         if (res.data.data) {
           this.total = res.data.data.total
           this.momentList = res.data.data.list

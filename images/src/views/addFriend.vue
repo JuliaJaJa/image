@@ -73,12 +73,13 @@ export default {
         }
     },
     created () {
-        this.getAllUser()
+       this.getAllUser()
     },
     methods: {
         getAllUser() {
             this.loading = true
             this.$axios.post('/selectAllUser', {
+                friendIds: this.$store.state.friendIds,
                 userId: this.$store.state.userId,
                 name: this.name
             }).then(res => {

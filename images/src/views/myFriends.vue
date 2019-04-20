@@ -11,11 +11,34 @@ export default {
     data() {
         return{
             loading: false,
+            friendIds: [],
             data: [],
-            columns: [
+           columns: [
                 {
-                    title: '已添加的好友',
-                    key: 'acceptName',
+                    title: '用户名',
+                    key: 'name',
+                    align: 'center'
+                },
+                {
+                    title: '手机号',
+                    key: 'phone',
+                    align: 'center'
+                },
+                {
+                    title: '性别',
+                    key: 'sex',
+                    align: 'center',
+                    render: (h, params) => {
+                        if (params.row.sex === '0') {
+                            return h('span','男')
+                        } else {
+                            return h('span','女')
+                        }
+                    }
+                },
+                {
+                    title: '个性签名',
+                    key: 'signature',
                     align: 'center'
                 }
             ]
@@ -27,16 +50,31 @@ export default {
     methods: {
         getFriends() {
             this.loading = true
-            this.$axios.post('/getFriends', {
-                requestId: this.$store.state.userId
+            this.$axios.post('/getFriendsIds', {
+                userId: this.$store.state.userId
             })
             .then(res => {
                 this.loading = false
                 console.log(res)
                 if (res.data.data) {
-                    this.data = res.data.data
+                    this.friendIds = res.data.data
+                    this.$store.commit('changeFriendIds', this.friendIds)
+                    //根据Ids获取userList
+                    this.$axios.post('/getUserListByIds', {
+                        friendIds: this.friendIds
+                    }).then(res => {
+                        console.log(res)
+                        if (res.data) {
+                            this.data = res.data.data
+                        } else {
+                            this.data = []
+                            this.$Message.info(res.data.msg)
+                        }        
+                    }).catch((err) => {
+                        console.log(err);
+                    })
                 } else {
-                    this.data = []
+                    this.friendIds = []
                     this.$Message.info(res.data.msg)
                 }
             }).catch((err) => {
