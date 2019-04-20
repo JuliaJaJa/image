@@ -44,6 +44,24 @@ export default new Router({
           path: '/photos/:albumId',
           name: 'photos',
           component: () => import('@/views/photos')
+        },
+        // 我的好友
+        {
+          path: '/friend/myFriends',
+          name: 'myFriends',
+          component: () => import('@/views/myFriends')
+        },
+        // 添加好友
+        {
+          path: '/friend/addFriend',
+          name: 'addFriend',
+          component: () => import('@/views/addFriend')
+        },
+        // 查看消息
+        {
+          path: '/info/browseInfo',
+          name: 'browseInfo',
+          component: () => import('@/views/browseInfo')
         }
       ]
     },

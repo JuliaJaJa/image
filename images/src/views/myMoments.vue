@@ -3,28 +3,27 @@
     <h1>我的动态</h1>
     <hr>
     <div class="content">
-      <Row>
+      <Row style="margin-bottom: 10px;" v-for="item in momentList" :key="item.momentId">
         <Col span="4">
           <div class="avatarContent">
-            <img :src="imgSrc" class="logo"> 
-            <p>2019-02-05 16:05</p>
-            <p v-if="isLocked"><Icon size="26" type="ios-lock-outline" /></p>
+            <img :src="item.avatar" class="logo"> 
+            <p>{{item.shareTime}}</p>
+            <p v-if="item.isLocked === 0"><Icon size="26" type="ios-lock-outline" /></p>
           </div>
         </Col>
          <Col span="13">
           <div class="imgContent">            
             <p class="description">
-              今天天气真好啊！开心！毕设加油鸭鸭！
-              今天天气真好啊！开心！毕设加油鸭鸭！
-              今天天气真好啊！开心！毕设加油鸭鸭！
+              {{item.talking}}
             </p>
-            <img :src="imgSrc" class="bigImg">
+            <img :src="item.imgUrl" class="bigImg">
           </div>
         </Col>
       </Row>
     </div>
     <div class="page">
-      <Page :total="100" 
+      <Page :total="total" 
+            :page-size="3"
             :page-size-opts="[3,5,10]" 
             show-sizer show-total 
             @on-change="changePage" 
@@ -37,18 +36,48 @@
 export default {
   data () {
     return {
-      isLocked: true,
-      imgSrc: require("@/assets/logo1.jpg")
+      momentList: [],
+      pageSize : 3,
+      pageNum: 1,
+      total: 0,
+      isLocked: true
     }
   },
+  created() {
+    this.getMomentList()
+  },
   methods: {
+    // 获取朋友圈列表
+    getMomentList() {
+      this.$axios.post('/getMomentList', {
+        userId: this.$store.state.userId,
+        pageSize: this.pageSize,
+        pageNum: this.pageNum
+      }).then(res => {
+        console.log(res)
+        if (res.data.data) {
+          this.total = res.data.data.total
+          this.momentList = res.data.data.list
+        } else {
+          this.total = 0 
+          this.momentList = []
+          this.$Message.error(res.data.msg)
+        }        
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
     // 换页数
     changePage (e) {
       console.log(e)
+      this.pageNum = e
+      this.getMomentList()
     },
     // 换尺寸
     changePageSize (e) {
       console.log(e)
+      this.pageSize = e
+      this.getMomentList()
     }
   }
 }

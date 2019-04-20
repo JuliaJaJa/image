@@ -3,31 +3,32 @@
     <h1>所有动态</h1>
     <hr>
     <div class="content">
-      <Row>
+      <Row style="margin-bottom: 10px;" v-for="item in momentList" :key="item.momentId">
         <Col span="4">
           <div class="avatarContent">
-            <Poptip word-wrap placement="bottom" trigger="hover" width="200" @on-popper-show="showInfo">
-              <img :src="imgSrc" class="logo"> 
+            <Poptip word-wrap placement="bottom" trigger="hover" width="200" @on-popper-show="showInfo(item.userId)">
+              <img :src="item.avatar" class="logo"> 
               <div slot="content">
-                <p><span>用户名：</span>Julia</p>
-                <p><span>手机号: </span>13207134490</p>
-                <p><span>性别: </span>小女孩</p>
-                <p><span>个性签名：</span>啦啦啦啦啦啦啦啦啦啦啦啦啦啦</p>
+                <p><span>用户名：</span>{{name}}</p>
+                <p><span>手机号: </span>{{phone}}</p>
+                <p><span>性别: </span>{{sex}}</p>
+                <p><span>个性签名：</span>{{signature}}</p>
               </div>
             </Poptip>
-            <p>2019-02-05 16:05</p>
+            <p>{{item.shareTime}}</p>
           </div>
         </Col>
          <Col span="20">
           <div class="imgContent">            
-            <p class="description">今天天气真好啊！开心！毕设加油鸭鸭！</p>
-            <img :src="imgSrc" class="bigImg">
+            <p class="description">{{item.talking}}</p>
+            <img :src="item.imgUrl" class="bigImg">
           </div>
         </Col>
       </Row>
     </div>
     <div class="page">
-       <Page :total="100" 
+       <Page :total="total" 
+             :page-size="3"
              :page-size-opts="[3,5,10]" 
              show-sizer show-total 
              @on-change="changePage" 
@@ -40,21 +41,74 @@
 export default {
   data () {
     return {
-      imgSrc: require("@/assets/logo1.jpg")
+      momentList: [],
+      pageSize : 3,
+      pageNum: 1,
+      total: 0,
+      name: '',
+      phone: '',
+      sex: '',
+      signature: ''
     }
   },
+  created() {
+    this.getAllMomentList()
+  },
   methods: {
+    // 获取所有朋友圈列表
+    getAllMomentList() {
+      this.$axios.post('/getAllMomentList', {
+        pageSize: this.pageSize,
+        pageNum: this.pageNum
+      }).then(res => {
+        if (res.data.data) {
+          this.total = res.data.data.total
+          this.momentList = res.data.data.list
+        } else {
+          this.total = 0 
+          this.momentList = []
+          this.$Message.error(res.data.msg)
+        }        
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
     // 每次hover时调接口展示用户信息
-    showInfo () {
-      // console.log("111")
+    showInfo (userId) {
+      this.$axios.post('/selectById', {
+        userId: userId
+      }).then(res => {
+        if (res.data.data) {
+          this.name = res.data.data.name
+          this.phone = res.data.data.phone
+          this.signature = res.data.data.signature
+          if (res.data.data.name === 0) {
+            this.sex = "小男孩"
+          } else {
+            this.sex = "小女孩"
+          }
+        } else {
+          this.name = ''
+          this.phone = ''
+          this.sex = ''
+          this.signature = ''
+          this.$Message.error(res.data.msg)
+        }        
+      }).catch((err) => {
+        console.log(err)
+      })
     },
     // 换页数
     changePage (e) {
       console.log(e)
+      this.pageNum = e
+      this.getAllMomentList()
     },
     // 换尺寸
     changePageSize (e) {
       console.log(e)
+      this.pageSize = e
+      this.getAllMomentList()
     }
   }
 }

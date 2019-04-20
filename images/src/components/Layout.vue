@@ -16,8 +16,8 @@
                     <Col offset="2" span="16" class="header-left">
                         云存储图片管理系统
                     </Col>
-                    <Col span="1" class="header-right">
-                        Julia
+                    <Col span="1" class="header-right" v-if="userName !== ''">
+                        {{userName}}
                     </Col>
                      <Col span="2" class="header-right">
                         <Button ghost type="text" icon="ios-image" class="exit-button" @click="home">
@@ -40,7 +40,7 @@
                                 <Icon type="md-photos" size="20"></Icon>
                                 相册
                             </template>
-                            <MenuItem  v-for="album in albums" :key="album.index" :name="album.index">{{album.name}}</MenuItem>
+                            <MenuItem  v-for="(album, index) in albums" :key="index" :name="index">{{album.albumName}}</MenuItem>
                         </Submenu>
                         <Submenu name="2">
                             <template slot="title">
@@ -49,8 +49,23 @@
                             </template>
                             <MenuItem name="community/myMoments">我的动态</MenuItem>
                             <MenuItem name="community/allMoments">所有动态</MenuItem>
+                        </Submenu>                        
+                         <Submenu name="3">
+                            <template slot="title">
+                                <Icon type="md-contacts" size="20"></Icon>
+                                好友管理
+                            </template>
+                            <MenuItem name="friend/myFriends">我的好友</MenuItem>
+                            <MenuItem name="friend/addFriend">添加好友</MenuItem>
                         </Submenu>
-                        <Submenu name="3">
+                         <Submenu name="4">
+                            <template slot="title">
+                                <Icon type="md-notifications" size="20"></Icon>
+                                站内消息
+                            </template>
+                            <MenuItem name="info/browseInfo">查看消息</MenuItem>
+                        </Submenu>
+                        <Submenu name="5">
                             <template slot="title">
                                 <Icon type="md-person" size="20"></Icon>
                                 个人信息
@@ -65,10 +80,7 @@
                         <BreadcrumbItem v-for="(item,index) in crumbList" :key="index">{{item}}</BreadcrumbItem>
                     </Breadcrumb>
                     <Content :style="{padding: '24px', background: '#fff'}">
-                        <!-- 保存组件状态到内存，避免重新渲染 -->
-                        <keep-alive>
-                            <router-view></router-view>
-                        </keep-alive>
+                        <router-view></router-view>
                     </Content> 
                 </Layout>
             </Layout>
@@ -81,39 +93,41 @@ export default {
   name: 'Homepage',
   data () {
     return {
+        //userName: '',
         crumbList: [
             "首页"
-        ],
-        albums: [
-            {
-                index: 1,
-                name: "相册1"
-            },
-            {
-                index: 2,
-                name: "相册2"
-            },
-            {
-                index: 3,
-                name: "相册3"
-            }
-            
         ]
     }     
   },
-//   mounted(){
-//       this.loadChange()
-//   },
+  computed: {
+    userName() {
+        return this.$store.state.name
+    },
+    albums: {
+      get() { 
+        return this.$store.state.albumList
+      },
+      set(newValue) {
+        this.$store.state.albumList = newValue 
+      }      
+    }
+  },
   watch: {
+    userName(newData, oldData) {
+      console.log(`${newData}--- ${oldData}`)
+    },
     $route(to, from) {
         // /
         //console.log("333"+from.path) 
         // /photos/1
         console.log("222"+to.path) 
         this.crumbList = to.path.split("/").slice(1)
+        if (this.crumbList[0] === '') {
+            this.crumbList[0] = '首页'
+        }
         if (this.crumbList[0] === "photos") {
             this.crumbList[0] = "相册"
-            this.crumbList[1] = "相册" + this.crumbList[1]
+            this.crumbList[1] = this.albums[this.crumbList[1]].albumName
         }
         if (this.crumbList[0] === "community") {
             this.crumbList[0] = "社区"
@@ -131,10 +145,44 @@ export default {
                 this.crumbList[1] = "修改个人信息"
             }
         }
+        if (this.crumbList[0] === "friend") {
+            this.crumbList[0] = "好友管理"
+            if(this.crumbList[1] === "myFriends") {
+                this.crumbList[1] = "我的好友"
+            } else {
+                this.crumbList[1] = "添加好友"
+            }
+        }
+        if (this.crumbList[0] === "info") {
+            this.crumbList[0] = "站内消息"
+            if(this.crumbList[1] === "browseInfo") {
+                this.crumbList[1] = "查看消息"
+            }
+        }
         console.log(this.crumbList)      
     }
   },
+  created () {
+    this.getAlbumList()
+  },
   methods: {
+    // 获取相册列表
+    getAlbumList() {
+      this.$axios.post('/getAlbumList', {
+        userId: this.$store.state.userId,
+      }).then(res => {
+        console.log(res)
+        if (res.data.data && res.data.data.length) {
+          this.albums = res.data.data
+          this.$store.commit('changeAlbumList', this.albums)
+          console.log("list",this.$store.state.albumList)
+        } else {
+          this.albums = []
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
     quit() {
         this.$router.push('/login')
     },
@@ -142,7 +190,8 @@ export default {
         this.$router.push('/')
     },
     openView(e) {
-        //console.log(e)
+        //e是index 0,1,2...
+        console.log(e)
         if(isNaN(e)){
             this.$router.push("/" + e)
         } else {            
