@@ -13,7 +13,7 @@ export default {
             loading: false,
             friendIds: [],
             data: [],
-           columns: [
+            columns: [
                 {
                     title: '用户名',
                     key: 'name',
@@ -40,6 +40,25 @@ export default {
                     title: '个性签名',
                     key: 'signature',
                     align: 'center'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    render: (h, params) => {
+                        return h('div', [
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                on: {
+                                    click: () => {
+                                       this.deleteFriend(params.row.userId)
+                                    }
+                                }
+                            }, "删除好友")
+                        ])
+                    }
                 }
             ]
         }
@@ -79,6 +98,28 @@ export default {
                 }
             }).catch((err) => {
                 console.log(err)
+            })
+        },
+        deleteFriend(userId) {
+            this.$Modal.info({
+                title: '提示信息',
+                content: '您确定要删除该好友吗？',
+                onOk: () => {
+                    this.$axios.post('/deleteFriend', {
+                        userId: this.$store.state.userId,
+                        friendId: userId
+                    }).then(res => {
+                        console.log(res)
+                        if (res.data.code === 200) {
+                            this.$Message.success(res.data.msg)
+                            this.getFriends()
+                        } else {
+                            this.$Message.error(res.data.msg)
+                        }        
+                    }).catch((err) => {
+                        console.log(err);
+                    })
+                }        
             })
         }
     }
