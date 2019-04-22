@@ -299,7 +299,6 @@ export default {
   width: 100%;
   height: 100%;
   .marginTop {
-    margin-top: 20px;
     display: flex;
     flex-wrap: wrap;
 
@@ -311,7 +310,7 @@ export default {
       line-height: 200px;
       font-size: 18px;
       font-weight: 500;
-      margin-right: 30px;
+      margin: 20px;
     }
 
     .photo {
@@ -319,9 +318,8 @@ export default {
       height: 200px;
       border: 1px dashed #ccc;
       text-align: center;
-      margin-right: 30px;
       position: relative;
-      margin-bottom: 30px;
+      margin: 20px;
       
       .img {
         width: 200px;

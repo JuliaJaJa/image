@@ -128,8 +128,13 @@ export default {
 
 <style lang="less" scoped>
 .container {
+    background: url("../assets/login_bg2.jpg");
+    background-repeat:no-repeat; 
+    background-size:100% 100%;
+    width: 100%;
+    height: 100%;
     .table {
-        margin-top: 20px;
+        margin: 20px;
     }
 }
 </style>

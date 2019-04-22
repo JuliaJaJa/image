@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <h1>我的动态</h1>
     <hr>
     <div class="content">
@@ -17,6 +17,29 @@
               {{item.talking}}
             </p>
             <img :src="item.imgUrl" class="bigImg">
+          </div>
+          <div class="comment">
+            <div class="icon">
+              <Icon type="ios-trash-outline" size="26" @click="deleteMoment(item.momentId)"/>
+            </div>
+            <div class="userComment">
+              <Row>
+                <Col span="2">
+                  <Icon type="ios-chatboxes-outline" size="22"/>
+                </Col>
+                <Col span="22">
+                  <Row v-for="(item,index) in item.comment" :key="index">
+                    <Col span="4">
+                      <img  :src="item.avatar" class="logo">
+                    </Col>
+                    <Col span="20">
+                      <p class="name"><span style="font-weight:bold; margin-right:10px;">{{item.name}}</span>  {{item.commentTime}}</p>
+                      <p>{{item.comment}}</p>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+            </div>
           </div>
         </Col>
       </Row>
@@ -78,39 +101,87 @@ export default {
       console.log(e)
       this.pageSize = e
       this.getMomentList()
+    },
+    //删除朋友圈
+    deleteMoment(momentId) {
+      this.$Modal.info({
+        title: '提示信息',
+        content: '您确定要删除该动态吗？',
+        onOk: () => {
+          this.$axios.post('/deleteMoment', {
+            momentId: momentId
+          }).then(res => {
+            console.log(res)
+            if(res.data.code === 200) {
+               this.$Message.success(res.data.msg)
+               this.getMomentList()
+            } else {
+               this.$Message.error(res.data.msg)
+            }
+          }).catch((err) => {
+            console.log(err)
+          })
+        }        
+      })
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-.content {
-  margin-top: 30px;
-  .avatarContent {
+.container {
+  // background: url("../assets/login_bg2.jpg");
+  // background-repeat:no-repeat; 
+  // background-size:100% 100%;
+  // width: 100%;
+  // height: 100%;
+  .content {
+    margin-top: 30px;
+    .avatarContent {
+      text-align: center;
+      .logo {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-bottom: 20px;
+      }
+    }
+    .imgContent {
+      border-left: 1px dashed #ccc;
+      padding-left: 20px;
+      .description {
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+      .bigImg {
+        width: 400px;
+        height: 250px;
+      }
+    }
+    .comment {
+      margin-top: 10px;
+      .icon {
+        margin-left: 400px;
+      }
+      .userComment {
+        .logo {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          overflow: hidden;
+          margin-bottom: 20px;
+        }
+        .name {
+          margin-bottom: 5px;
+        }
+      }
+    }
+  }
+  .page {
+    margin-top: 20px;
     text-align: center;
-    .logo {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      overflow: hidden;
-      margin-bottom: 20px;
-    }
-  }
-  .imgContent {
-    border-left: 1px dashed #ccc;
-    padding-left: 20px;
-    .description {
-      font-size: 14px;
-      margin-bottom: 10px;
-    }
-    .bigImg {
-      width: 400px;
-      height: 250px;
-    }
   }
 }
-.page {
-  margin-top: 20px;
-  text-align: center;
-}
+
 </style>
