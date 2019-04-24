@@ -77,7 +77,6 @@ export default {
                 console.log(res)
                 if (res.data.data) {
                     this.friendIds = res.data.data
-                    this.$store.commit('changeFriendIds', this.friendIds)
                     //根据Ids获取userList
                     this.$axios.post('/getUserListByIds', {
                         friendIds: this.friendIds
@@ -93,6 +92,7 @@ export default {
                         console.log(err);
                     })
                 } else {
+                    // 该用户还没有好友
                     this.friendIds = []
                     this.$Message.info(res.data.msg)
                 }
@@ -101,7 +101,7 @@ export default {
             })
         },
         deleteFriend(userId) {
-            this.$Modal.info({
+            this.$Modal.confirm({
                 title: '提示信息',
                 content: '您确定要删除该好友吗？',
                 onOk: () => {

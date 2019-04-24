@@ -11,9 +11,7 @@ const store = new Vuex.Store({
         phone: '',
         sex: '',
         signature: '',
-        albumList: [],
-        friendIds: [],
-        unfriendIds: []
+        albumList: []
     },
     mutations: {
         changeUserId (state, userId) {
@@ -39,12 +37,6 @@ const store = new Vuex.Store({
         },
         changeAlbumList (state, albumList) {
             state.albumList = albumList
-        },
-        changeFriendIds (state, friendIds) {
-            state.friendIds = friendIds
-        },
-        changeUnFriendIds (state, unfriendIds) {
-            state.unfriendIds = unfriendIds
         }
     }
 })

@@ -21,6 +21,7 @@ export default {
             name: '',
             loading: false,
             btnLabel: '添加好友',
+            friendIds: [],
             columns: [
                 {
                     title: '用户名',
@@ -73,13 +74,34 @@ export default {
         }
     },
     created () {
-       this.getAllUser()
+       this.getFriends()
     },
     methods: {
+         getFriends() {
+            this.loading = true
+            this.$axios.post('/getFriendsIds', {
+                userId: this.$store.state.userId
+            })
+            .then(res => {
+                this.loading = false
+                console.log(res)
+                if (res.data.data) {
+                    this.friendIds = res.data.data
+                    this.getAllUser()
+                } else {
+                    // 没有好友 就展示所有好友
+                    this.friendIds = []
+                    this.getAllUser()
+                    this.$Message.info(res.data.msg)
+                }
+            }).catch((err) => {
+                console.log(err)
+            })
+        },
         getAllUser() {
             this.loading = true
             this.$axios.post('/selectAllUser', {
-                friendIds: this.$store.state.friendIds,
+                friendIds: this.friendIds,
                 userId: this.$store.state.userId,
                 name: this.name
             }).then(res => {

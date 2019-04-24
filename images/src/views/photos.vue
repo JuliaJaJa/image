@@ -200,7 +200,7 @@ export default {
     },
     // 删除照片
     handleRemove (id) {
-      this.$Modal.info({
+      this.$Modal.confirm({
         title: '提示信息',
         content: '您确定要删除该相片吗？',
         onOk: () => {

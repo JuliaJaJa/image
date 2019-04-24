@@ -200,7 +200,7 @@ export default {
       })
     },
     handleRemove (albumId) {
-      this.$Modal.info({
+      this.$Modal.confirm({
         title: '提示信息',
         content: '您确定要删除该相册吗？',
         onOk: () => {

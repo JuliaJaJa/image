@@ -107,7 +107,6 @@ export default {
     .then(res => {
       if (res.data.data) {
         this.friendIds = res.data.data
-        this.$store.commit('changeFriendIds', this.friendIds)
         //根据Ids获取momentList
          this.getAllMomentList()
       } else {

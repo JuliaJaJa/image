@@ -104,7 +104,7 @@ export default {
     },
     //删除朋友圈
     deleteMoment(momentId) {
-      this.$Modal.info({
+      this.$Modal.confirm({
         title: '提示信息',
         content: '您确定要删除该动态吗？',
         onOk: () => {
